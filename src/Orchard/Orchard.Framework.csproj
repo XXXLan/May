@@ -62,6 +62,7 @@
     <Compile Include="Logging\LoggingExtensions.cs" />
     <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Logging\NullLoggerFactory.cs" />
+    <Compile Include="Logging\OrchardFileAppender.cs" />
     <Compile Include="Logging\OrchardLog4netFactory.cs" />
     <Compile Include="Logging\OrchardLog4netLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
