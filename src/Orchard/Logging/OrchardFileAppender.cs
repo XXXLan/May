@@ -16,7 +16,58 @@ namespace Orchard.Logging
         /// </summary>
         private const int Retries = 50;
 
+		/// <summary>
+		/// Maxunum number of suffixes recorded before a cleanup happens to recycle memory.
+		/// </summary>
         private const int MaxSuffixex = 100;
 
+		/// <summary>
+		/// Opens the log file adding a incremental suffix to the filename if required due to an openning failure(usually,locking).
+		/// </summary>
+		/// <param name="fileName">The filename as specified in the configuration file.</param>
+		/// <param name="append">Boolean flag indicating weather the log file should be appended if it already exists.</param>
+		protected override void OpenFile(string fileName,bool append){
+			lock (this) {
+				bool fileOpened = false;
+				string completeFilename = GetNextOutputFileName (fileName);
+				string currentFilename = fileName;
+
+				if (_suffixes.Count > MaxSuffixex) {
+					_suffixes.Clear();
+				}
+
+				if (!_suffixes.ContainsKey (completeFilename)) {
+					_suffixes [completeFilename] = 0;
+				}
+
+				int newSuffix = _suffixes [completeFilename];
+
+				for (int i = 1; !fileOpened && i <= Retries; i++) {
+					try{
+						if(newSuffix>0){
+							currentFilename=string.Format("{0}-{1}",fileName,newSuffix);
+						}
+
+						BaseOpenFile(currentFilename,append);
+
+						fileOpened=true;
+					}catch{
+						newSuffix = _suffixes [completeFilename] + 1;
+
+						LogLog.Error (typeof(OrchardFileAppender), string.Format ("OrchardFileAppender:Failed to open [{0}].Attempting [{1}-{2}] instead.", fileName, fileName, newSuffix));
+					}
+				}
+				_suffixes [completeFilename] = newSuffix;
+			}
+		}
+
+		/// <summary>
+		/// Calls the base class OpenFile method.Allows this method to be mocked.
+		/// </summary>
+		/// <param name="fileName">The filename as specified in the configuration file.</param>
+		/// <param name="append">Bollean flag indicating weather the log file should be appended if it already exists.</param>
+		protected virtual void BaseOpenFile(string fileName,bool append){
+			base.OpenFile (fileName, append);
+		}
     }
 }
