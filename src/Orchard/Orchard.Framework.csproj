@@ -55,6 +55,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Environment\Configuration\ShellSettings.cs" />
+    <Compile Include="Environment\Configuration\TenantState.cs" />
+    <Compile Include="Environment\IOrchardHostContainer.cs" />
+    <Compile Include="Environment\IShim.cs" />
     <Compile Include="Logging\CastleLogger.cs" />
     <Compile Include="Logging\CastleLoggerFactory.cs" />
     <Compile Include="Logging\ILogger.cs" />
