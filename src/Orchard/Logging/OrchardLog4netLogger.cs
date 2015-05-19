@@ -20,7 +20,9 @@ namespace Orchard.Logging
 		public IOrchardHostContainer HostContainer{ get; set;}
 
 		public OrchardLog4netLogger(log4net.Core.ILogger logger,OrchardLog4netFactory factory){
-			
+			OrchardHostContainerRegistry.RegisterShim (this);
+			Logger = logger;
+
 		}
     }
 }

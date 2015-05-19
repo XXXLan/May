@@ -24,13 +24,19 @@ namespace Orchard.Environment
         public static void RegisterHostContainer(IOrchardHostContainer container) {
             lock (_syncLock) {
                 CleanupShims();
+
                 _hostContainer = container;
                 RegisterContainerInShims();
             }
         }
 
         private static void RegisterContainerInShims() { 
-            foreach(var)
+			foreach(var shim in _shims){
+				var target = shim.Target;
+				if (target != null) {
+					target.HostContainer = _hostContainer;
+				}
+			}
         }
 
         private static void CleanupShims() {
